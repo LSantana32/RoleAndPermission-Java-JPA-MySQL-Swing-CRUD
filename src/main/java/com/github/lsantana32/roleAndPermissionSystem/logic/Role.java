@@ -16,7 +16,7 @@ public class Role implements Serializable {
     private int id;
     private String roleName;
     private String description;
-    @OneToMany
+    @OneToMany(mappedBy="aRole")
     private List<User>users;
 
     public Role(int id, String roleName, String description, List<User> users) {

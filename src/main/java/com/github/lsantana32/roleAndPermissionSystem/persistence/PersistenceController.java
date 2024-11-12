@@ -7,6 +7,7 @@ import javax.persistence.NoResultException;
 public class PersistenceController {
     
     UserJpaController ujc = new UserJpaController();
+    RoleJpaController rjc = new RoleJpaController();
     
     public String validateUser(User user) {
         String message;

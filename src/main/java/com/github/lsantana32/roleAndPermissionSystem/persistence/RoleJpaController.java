@@ -1,3 +1,4 @@
+
 package com.github.lsantana32.roleAndPermissionSystem.persistence;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.Role;
@@ -8,14 +9,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+/**
+ *
+ * @author lucas
+ */
 public class RoleJpaController implements Serializable {
 
     public RoleJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
+    
+    public RoleJpaController() {
+        emf = Persistence.createEntityManagerFactory("roleAndPermissionPU");
+    }
+    
     private EntityManagerFactory emf = null;
 
     public EntityManager getEntityManager() {
