@@ -1,6 +1,7 @@
 package com.github.lsantana32.roleAndPermissionSystem.persistence;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
+import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.WrongPasswordException;
 
 import javax.persistence.NoResultException;
 
@@ -9,22 +10,18 @@ public class PersistenceController {
     UserJpaController ujc = new UserJpaController();
     RoleJpaController rjc = new RoleJpaController();
     
-    public String validateUser(User user) {
+    public User validateUser(User user) {
         String message;
         try {
             User userBD= ujc.findUserWithUserName(user.getUsername());
             if (userBD.getPassword().equals(user.getPassword())){
-                message = "Welcome "+user.getUsername();
+                return userBD;
             }
             else {
-                message = "The password is incorrect";
+                throw new WrongPasswordException();
             }
         }catch (NoResultException e){
-            message = "The user "+user.getUsername()+" no exists";
+            throw e;
         }
-        return message;
     }
-
-   
-    
 }

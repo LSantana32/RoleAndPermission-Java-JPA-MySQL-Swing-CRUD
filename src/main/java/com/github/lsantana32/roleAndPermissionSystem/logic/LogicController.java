@@ -6,7 +6,7 @@ public class LogicController {
 
     PersistenceController pc = new PersistenceController();
     
-    public String validateUser(String userName, String password) {
+    public User validateUser(String userName, String password) {
         User user = new User();
         user.setUsername(userName);
         user.setPassword(password);
