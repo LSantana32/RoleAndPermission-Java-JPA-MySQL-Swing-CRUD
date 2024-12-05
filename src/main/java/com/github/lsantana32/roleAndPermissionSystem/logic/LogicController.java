@@ -1,6 +1,7 @@
 package com.github.lsantana32.roleAndPermissionSystem.logic;
 
 import com.github.lsantana32.roleAndPermissionSystem.persistence.PersistenceController;
+import java.util.List;
 
 public class LogicController {
 
@@ -12,6 +13,11 @@ public class LogicController {
         user.setPassword(password);
         
         return pc.validateUser(user);
+    }   
+
+    public List<User> getUsers() {
+        return pc.getUsers();
     }
-    
+
+
 }

@@ -2,6 +2,7 @@ package com.github.lsantana32.roleAndPermissionSystem.persistence;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
 import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.WrongPasswordException;
+import java.util.List;
 
 import javax.persistence.NoResultException;
 
@@ -23,5 +24,9 @@ public class PersistenceController {
         }catch (NoResultException e){
             throw e;
         }
+    }
+
+    public List<User> getUsers() {
+        return ujc.findUserEntities();
     }
 }

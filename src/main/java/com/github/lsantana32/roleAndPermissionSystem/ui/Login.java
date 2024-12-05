@@ -139,11 +139,20 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        String user = txtUser.getText();
+        String userName = txtUser.getText();
         String password = String.valueOf(txtPassword.getPassword());
-        if (!user.isEmpty() && !password.isEmpty()){
+        if (!userName.isEmpty() && !password.isEmpty()){
             try {
-                User user = lc.validateUser(user,password);
+                User user = lc.validateUser(userName,password);
+                if (user.getaRole().getRoleName().equals("admin")){
+                    PrincipalAdmin pa= new PrincipalAdmin(user.getUsername());
+                    pa.setVisible(true);
+                    pa.setLocationRelativeTo(null);
+                }else{
+                    PrincipalUser pu= new PrincipalUser(user.getUsername());
+                    pu.setVisible(true);
+                    pu.setLocationRelativeTo(null);
+                }
             }catch(WrongPasswordException wpe){
                 cw.viewMessage("The password is wrong. Please, try again.", "ERROR", "Error: Wrong Password");
             }catch (NoResultException nre){
