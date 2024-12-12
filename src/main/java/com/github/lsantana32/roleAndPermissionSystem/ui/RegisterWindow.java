@@ -1,13 +1,16 @@
 package com.github.lsantana32.roleAndPermissionSystem.ui;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
+import java.util.Arrays;
 
 public class RegisterWindow extends javax.swing.JFrame {
     
     LogicController lc = new LogicController();
     CustomWindow customWindow = new CustomWindow();
-    public RegisterWindow() {
+    String userAdm;
+    public RegisterWindow(String userAdmin) {
         initComponents();
+        userAdm= userAdmin;
     }
     
     
@@ -135,17 +138,24 @@ public class RegisterWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btmConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmConfirmActionPerformed
-                                                                               // broder tenes que hacer las verificaciones
-                                                                               // antes de seguir :)
-        if (txtPassword.equals(txtConfirmpw)){
-            String username = txtUsername.getText();
-            String password = txtPassword.getPassword().toString();
-            String role = CbRole.getSelectedItem().toString();
-            
-        }else {
-            customWindow.viewMessage("Both passwords must be the same", "ERROR", "ERROR: Different passwords");
+        String username = txtUsername.getText();
+        if(!lc.getUsernames().contains(username)){
+            String password = String.valueOf(txtPassword.getPassword());
+            String confirmPw = String.valueOf(txtConfirmpw.getPassword());
+            if (password.equals(confirmPw)){                
+                String role = CbRole.getSelectedItem().toString();
+                lc.registerUser(username,password,role);
+                customWindow.viewMessage("The user has been created successfully", "ERROR", "ERROR: Different passwords");
+                this.setVisible(false);
+                PrincipalAdmin pa = new PrincipalAdmin(userAdm);
+                pa.setVisible(true);
+                pa.setLocationRelativeTo(null);
+            }else {
+                customWindow.viewMessage("Both passwords must be the same", "ERROR", "ERROR: Different passwords");
+            }}
+        else{
+            customWindow.viewMessage("The username is already taken, please choice another.", "ERROR", "ERROR: Invalid username");
         }
-        
     }//GEN-LAST:event_btmConfirmActionPerformed
 
     private void btmClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmClearActionPerformed
@@ -153,6 +163,7 @@ public class RegisterWindow extends javax.swing.JFrame {
         txtPassword.setText(null);
         txtConfirmpw.setText(null);
     }//GEN-LAST:event_btmClearActionPerformed
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

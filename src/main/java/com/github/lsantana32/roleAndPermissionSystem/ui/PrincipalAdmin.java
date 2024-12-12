@@ -6,7 +6,10 @@ package com.github.lsantana32.roleAndPermissionSystem.ui;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
+import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.NonexistentEntityException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,6 +19,7 @@ import javax.swing.table.DefaultTableModel;
 public class PrincipalAdmin extends javax.swing.JFrame {
     
     LogicController lc = new LogicController();
+    CustomWindow cw = new CustomWindow();
 
     public PrincipalAdmin(String userName) {
         initComponents();
@@ -195,13 +199,31 @@ public class PrincipalAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btmModifyActionPerformed
 
     private void btmDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmDeleteActionPerformed
-        // TODO add your handling code here:
+        if (tableUsers.getRowCount()>0){
+            if (tableUsers.getSelectedRow()!=-1){
+                int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
+                try {
+                    lc.deleteUser(id);
+                } catch (NonexistentEntityException ex) {
+                    cw.viewMessage("Has been an error with the database","Error","Database Error");
+                }
+                cw.viewMessage("Successful user deletion","Info","Delete Successful");
+                loadTable();
+            }else {
+                cw.viewMessage("Please select a record", "Error", "Selection Error");
+            }
+        } 
+        else{
+            cw.viewMessage("There are no records to modify", "Error", "No records Error");
+        }
+    
     }//GEN-LAST:event_btmDeleteActionPerformed
 
     private void btmRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmRegisterActionPerformed
-        RegisterWindow rw = new RegisterWindow();
+        RegisterWindow rw = new RegisterWindow(labelUsername.getText());
         rw.setVisible(true);
         rw.setLocationRelativeTo(null);
+        this.setVisible(false);
     }//GEN-LAST:event_btmRegisterActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
