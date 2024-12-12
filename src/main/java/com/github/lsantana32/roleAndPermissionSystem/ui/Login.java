@@ -1,4 +1,5 @@
 package com.github.lsantana32.roleAndPermissionSystem.ui;
+import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.CustomWindow;
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
 import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.WrongPasswordException;
@@ -148,10 +149,12 @@ public class Login extends javax.swing.JFrame {
                     PrincipalAdmin pa= new PrincipalAdmin(user.getUsername());
                     pa.setVisible(true);
                     pa.setLocationRelativeTo(null);
+                    this.setVisible(false);
                 }else{
                     PrincipalUser pu= new PrincipalUser(user.getUsername());
                     pu.setVisible(true);
                     pu.setLocationRelativeTo(null);
+                    this.setVisible(false);
                 }
             }catch(WrongPasswordException wpe){
                 cw.viewMessage("The password is wrong. Please, try again.", "ERROR", "Error: Wrong Password");

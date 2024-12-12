@@ -1,21 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.github.lsantana32.roleAndPermissionSystem.ui;
 
+import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.CustomWindow;
+import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.RegisterWindow;
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
 import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.NonexistentEntityException;
+import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.ModifyWindow;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author lucas
- */
+
 public class PrincipalAdmin extends javax.swing.JFrame {
     
     LogicController lc = new LogicController();
@@ -187,7 +182,7 @@ public class PrincipalAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btmExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmExitActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_btmExitActionPerformed
 
     private void btmRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmRefreshActionPerformed
@@ -195,7 +190,21 @@ public class PrincipalAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_btmRefreshActionPerformed
 
     private void btmModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmModifyActionPerformed
-        // TODO add your handling code here:
+        if (tableUsers.getRowCount()>0){
+            if (tableUsers.getSelectedRow()!=-1){
+                int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
+                User user = lc.findUser(id);
+                ModifyWindow mw = new ModifyWindow(user ,labelUsername.getText());
+                mw.setVisible(true);
+                mw.setLocationRelativeTo(null);
+                this.setVisible(false);
+            }else {
+                cw.viewMessage("Please select a record", "Error", "Selection Error");
+            }
+        } 
+        else{
+            cw.viewMessage("There are no records to modify", "Error", "No records Error");
+        }
     }//GEN-LAST:event_btmModifyActionPerformed
 
     private void btmDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmDeleteActionPerformed

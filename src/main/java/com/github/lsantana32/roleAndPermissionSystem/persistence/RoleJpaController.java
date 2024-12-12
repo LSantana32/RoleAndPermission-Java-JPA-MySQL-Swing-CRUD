@@ -13,10 +13,7 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-/**
- *
- * @author lucas
- */
+
 public class RoleJpaController implements Serializable {
 
     public RoleJpaController(EntityManagerFactory emf) {

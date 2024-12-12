@@ -1,4 +1,4 @@
-package com.github.lsantana32.roleAndPermissionSystem.ui;
+package com.github.lsantana32.roleAndPermissionSystem.ui.addModify;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;

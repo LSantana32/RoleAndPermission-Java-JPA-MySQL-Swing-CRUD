@@ -42,4 +42,25 @@ public class LogicController {
     public void deleteUser(int id) throws NonexistentEntityException {
         pc.deleteUser(id);
     }
+    
+    public User findUser(int id){
+        return pc.findUser(id);
+    }
+
+    public List<String> getUsernamesExcept(String username) {
+        List <User> users = getUsers();
+        List <String> usernames = new ArrayList<>();
+        for (User user : users){
+            if (!user.getUsername().equals(username)){
+                usernames.add(user.getUsername());
+            }
+        }
+            return usernames;
+    }
+
+    public void modifyUser(int id, String username, String password, String role) throws Exception {
+        User user = new User(id,username,password,pc.getRole(role));
+        pc.modifyUser(user);
+    }
 }
+
