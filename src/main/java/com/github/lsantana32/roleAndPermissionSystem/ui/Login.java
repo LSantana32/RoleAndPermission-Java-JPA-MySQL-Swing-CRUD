@@ -1,5 +1,4 @@
 package com.github.lsantana32.roleAndPermissionSystem.ui;
-import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.CustomWindow;
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
 import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.WrongPasswordException;
@@ -9,8 +8,8 @@ public class Login extends javax.swing.JFrame {
 
     LogicController lc = new LogicController();
     CustomWindow cw = new CustomWindow();
-    
-    
+
+
     public Login() {
         initComponents();
     }
@@ -139,38 +138,23 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+    //------------------------------------------------------------------------------------------------------------------
+    // INTERFACE USER CODE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {
         String userName = txtUser.getText();
         String password = String.valueOf(txtPassword.getPassword());
-        if (!userName.isEmpty() && !password.isEmpty()){
-            try {
-                User user = lc.validateUser(userName,password);
-                if (user.getaRole().getRoleName().equals("admin")){
-                    PrincipalAdmin pa= new PrincipalAdmin(user.getUsername());
-                    pa.setVisible(true);
-                    pa.setLocationRelativeTo(null);
-                    this.setVisible(false);
-                }else{
-                    PrincipalUser pu= new PrincipalUser(user.getUsername());
-                    pu.setVisible(true);
-                    pu.setLocationRelativeTo(null);
-                    this.setVisible(false);
-                }
-            }catch(WrongPasswordException wpe){
-                cw.viewMessage("The password is wrong. Please, try again.", "ERROR", "Error: Wrong Password");
-            }catch (NoResultException nre){
-                cw.viewMessage("The user doesn´t exist. Please, communicate with us for provide a solution", "ERROR","Error: Wrong User");
-            }
-
-        }else{
-            cw.viewMessage("Please complete both fields before clicking Login", "ERROR","Error : Incomplete fields");
+        if (!validateInput(userName,password)) {
+            return;
         }
-    }//GEN-LAST:event_btnLoginActionPerformed
+        validateLogin(userName,password);
+    }
 
-    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {
         txtUser.setText(null);
         txtPassword.setText(null);
-    }//GEN-LAST:event_btnClearActionPerformed
+    }
 
 
 
@@ -185,4 +169,39 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
+
+    //------------------------------------------------------------------------------------------------------------------
+    // REUSED/REFACTOR CODE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private boolean validateInput(String userName, String password){
+        boolean isValid = true;
+        if (userName.isEmpty() && password.isEmpty()){
+            cw.viewMessage("Please complete both fields before clicking Login", "Error","Error: Incomplete fields");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private void validateLogin(String userName, String password){
+        try {
+            User user = lc.validateUser(userName,password);
+            openTypeUserWindow(user);
+        }catch(WrongPasswordException wpe){
+            cw.viewMessage("The password is wrong. Please, try again.", "Error", "Error: Wrong Password");
+        }catch (NoResultException nre){
+            cw.viewMessage("The user doesn´t exist. Please, communicate with us for provide a solution", "Error","Error: Wrong User");
+        }
+    }
+
+    private void openTypeUserWindow(User user){
+        if (user.getaRole().getRoleName().equals("admin")){
+            PrincipalAdmin pa= new PrincipalAdmin(user.getUsername());
+            WindowUtils.openWindow(pa);
+        }else{
+            PrincipalUser pu= new PrincipalUser(user.getUsername());
+            WindowUtils.openWindow(pu);
+        }
+        WindowUtils.closeWindow(this);
+    }
 }

@@ -1,4 +1,4 @@
-package com.github.lsantana32.roleAndPermissionSystem.ui.addModify;
+package com.github.lsantana32.roleAndPermissionSystem.ui;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.ui.PrincipalAdmin;
@@ -8,14 +8,12 @@ public class RegisterWindow extends javax.swing.JFrame {
     
     LogicController lc = new LogicController();
     CustomWindow customWindow = new CustomWindow();
-    String userAdm;
     PrincipalAdmin pa;
+
     public RegisterWindow(String userAdmin) {
         initComponents();
         pa=new PrincipalAdmin(userAdmin);
     }
-    
-    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -154,39 +152,30 @@ public class RegisterWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btmConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmConfirmActionPerformed
+    //------------------------------------------------------------------------------------------------------------------
+    // INTERFACE USER CODE
+    //------------------------------------------------------------------------------------------------------------------
+    private void btmConfirmActionPerformed(java.awt.event.ActionEvent evt) {
         String username = txtUsername.getText();
-        if(!lc.getUsernames().contains(username)){
-            String password = String.valueOf(txtPassword.getPassword());
-            String confirmPw = String.valueOf(txtConfirmpw.getPassword());
-            if (password.equals(confirmPw)){                
-                String role = CbRole.getSelectedItem().toString();
-                lc.registerUser(username,password,role);
-                customWindow.viewMessage("The user has been created successfully", "ERROR", "ERROR: Different passwords");
-                this.setVisible(false);
-                pa.setVisible(true);
-                pa.setLocationRelativeTo(null);
-            }else {
-                customWindow.viewMessage("Both passwords must be the same", "ERROR", "ERROR: Different passwords");
-            }}
-        else{
-            customWindow.viewMessage("The username is already taken, please choice another.", "ERROR", "ERROR: Invalid username");
+        String password = String.valueOf(txtPassword.getPassword());
+        String confirmPw = String.valueOf(txtConfirmpw.getPassword());
+        if (!validateInput(username,password,confirmPw)){
+            return;
         }
-    }//GEN-LAST:event_btmConfirmActionPerformed
+        String role = CbRole.getSelectedItem().toString();
+        registerUser(username,password,role);
+    }
 
-    private void btmClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmClearActionPerformed
+    private void btmClearActionPerformed(java.awt.event.ActionEvent evt) {
         txtUsername.setText(null);
         txtPassword.setText(null);
         txtConfirmpw.setText(null);
-    }//GEN-LAST:event_btmClearActionPerformed
+    }
 
-    private void btmCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmCancelActionPerformed
-        this.setVisible(false);
-        pa.setVisible(true);
-        pa.setLocationRelativeTo(null);
-    }//GEN-LAST:event_btmCancelActionPerformed
-    
-
+    private void btmCancelActionPerformed(java.awt.event.ActionEvent evt) {
+        WindowUtils.openWindow(pa);
+        WindowUtils.closeWindow(this);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CbRole;
@@ -205,4 +194,39 @@ public class RegisterWindow extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
+
+    //------------------------------------------------------------------------------------------------------------------
+    // REUSED/REFACTOR CODE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private boolean validateInput(String username, String password, String confirmPw){
+        boolean isValid = true;
+
+        if (username.isEmpty()){
+            customWindow.viewMessage("The username cannot be an empty record", "Error", "Error: Empty username");
+            isValid = false;
+        }
+
+        if (password.isEmpty() || confirmPw.isEmpty()){
+            customWindow.viewMessage("The password cannot be an empty record", "Error", "Error: Empty password");
+            isValid = false;
+        }
+        
+        if(lc.getUsernames().contains(username)){
+            customWindow.viewMessage("The username is already taken, please choice another.", "Error", "Error: Invalid username");
+            isValid= false;
+        }
+        if (!password.equals(confirmPw)){
+            customWindow.viewMessage("Both passwords must be the same", "Error", "Error: Different passwords");
+            isValid= false;
+        }
+        return isValid;
+    }
+
+    private void registerUser(String username, String password, String role) {
+        lc.registerUser(username,password,role);
+        customWindow.viewMessage("The user has been created successfully", "Info", "User created");
+        WindowUtils.openWindow(pa);
+        WindowUtils.closeWindow(this);
+    }
 }

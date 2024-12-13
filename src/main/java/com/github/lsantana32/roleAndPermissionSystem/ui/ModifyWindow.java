@@ -1,4 +1,4 @@
-package com.github.lsantana32.roleAndPermissionSystem.ui.addModify;
+package com.github.lsantana32.roleAndPermissionSystem.ui;
 
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
@@ -140,43 +140,25 @@ public class ModifyWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btmConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmConfirmActionPerformed
+    //------------------------------------------------------------------------------------------------------------------
+    // INTERFACE USER CODE
+    //------------------------------------------------------------------------------------------------------------------
+    private void btmConfirmActionPerformed(java.awt.event.ActionEvent evt) {
         String username = txtUsername.getText();
-        if(!lc.getUsernamesExcept(userModify.getUsername()).contains(username)){
-            String password = String.valueOf(txtPassword.getPassword());
-            String confirmPw = String.valueOf(txtConfirmpw.getPassword());
-            String role = CbRole.getSelectedItem().toString();
-            if (password.isEmpty() || confirmPw.isEmpty()){
-                customWindow.viewMessage("The password cannot be an empty record", "Error", "ERROR: Password empty");
-                return;
-            }
-            if (!password.equals(String.valueOf(userModify.getPassword())) || !username.equals(userModify.getUsername()) || !role.equals(userModify.getaRole().getRoleName())){
-                if (password.equals(confirmPw)){                
-                    try {
-                        lc.modifyUser(userModify.getId(), username,password,role);
-                        customWindow.viewMessage("The user has been modify successfully", "Info", "Modify successfully");
-                        this.setVisible(false);
-                        principalAdmin.setVisible(true);
-                        principalAdmin.setLocationRelativeTo(null);
-                    }catch (Exception ex) {
-                        customWindow.viewMessage("An error has occurred with the database", "Error", "ERROR: database");
-                    }
-                }else {
-                    customWindow.viewMessage("Both passwords must be the same", "Error", "Error: Different passwords");
-            }}
-            else{
-                customWindow.viewMessage("You need to modify a record to continue", "Error", "ERROR: No modify");
-            }}
-        else{
-            customWindow.viewMessage("The username is already taken, please choice another.", "Error", "ERROR: Invalid username");
-        }         
-    }//GEN-LAST:event_btmConfirmActionPerformed
+        String password = String.valueOf(txtPassword.getPassword());
+        String confirmPw = String.valueOf(txtConfirmpw.getPassword());
+        String role = CbRole.getSelectedItem().toString();
+        if (!validateInput(username, password, confirmPw, role)){
+            return;
+        }
+        modifyUser(username, password, role);
+    }
 
-    private void btmCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmCancelActionPerformed
+    private void btmCancelActionPerformed(java.awt.event.ActionEvent evt) {
         this.setVisible(false);
         principalAdmin.setVisible(true);
         principalAdmin.setLocationRelativeTo(null);
-    }//GEN-LAST:event_btmCancelActionPerformed
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CbRole;
@@ -192,4 +174,38 @@ public class ModifyWindow extends javax.swing.JFrame {
     private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    //  REUSED/REFACTOR CODE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private boolean validateInput(String username, String password, String confirmPw, String role) {
+        boolean isValid = true;
+        if(lc.getUsernamesExcept(userModify.getUsername()).contains(username)){
+            customWindow.viewMessage("The username is already taken, please choice another.", "Error", "Error: Invalid username");
+            isValid = false;
+        }
+        if (password.isEmpty() || confirmPw.isEmpty()){
+            customWindow.viewMessage("The password cannot be an empty record", "Error", "Error: Empty password");
+            isValid = false;
+        }
+        if (password.equals(String.valueOf(userModify.getPassword())) && username.equals(userModify.getUsername()) && role.equals(userModify.getaRole().getRoleName())){
+            customWindow.viewMessage("You need to modify a record to continue", "Error", "Error: No modify");
+            isValid = false;
+        }
+         if (!password.equals(confirmPw)){
+            customWindow.viewMessage("Both passwords must be the same", "Error", "Error: Different passwords");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    private void modifyUser(String username, String password, String role) {
+        lc.modifyUser(userModify.getId(), username, password, role);
+        customWindow.viewMessage("The user has been modified successfully", "Info", "Modify successfully");
+        WindowUtils.openWindow(principalAdmin);
+        WindowUtils.closeWindow(this);
+    }
+
 }

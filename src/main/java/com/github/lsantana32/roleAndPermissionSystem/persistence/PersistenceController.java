@@ -47,16 +47,24 @@ public class PersistenceController {
         return result;
     }
 
-    public void deleteUser(int id) throws NonexistentEntityException {
-        ujc.destroy(id);
+    public void deleteUser(int id){
+        try {
+            ujc.destroy(id);
+        } catch (NonexistentEntityException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public User findUser (int id){
         return ujc.findUser(id);
     }
 
-    public void modifyUser(User user) throws Exception {
-        ujc.edit(user);
+    public void modifyUser(User user){
+        try {
+            ujc.edit(user);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     
     

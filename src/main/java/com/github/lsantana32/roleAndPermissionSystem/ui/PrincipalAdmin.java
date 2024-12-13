@@ -1,11 +1,8 @@
 package com.github.lsantana32.roleAndPermissionSystem.ui;
 
-import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.CustomWindow;
-import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.RegisterWindow;
 import com.github.lsantana32.roleAndPermissionSystem.logic.LogicController;
 import com.github.lsantana32.roleAndPermissionSystem.logic.User;
 import com.github.lsantana32.roleAndPermissionSystem.persistence.exceptions.NonexistentEntityException;
-import com.github.lsantana32.roleAndPermissionSystem.ui.addModify.ModifyWindow;
 import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
@@ -181,63 +178,43 @@ public class PrincipalAdmin extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btmExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmExitActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_btmExitActionPerformed
+    //------------------------------------------------------------------------------------------------------------------
+    // INTERFACE USER CODE
+    //------------------------------------------------------------------------------------------------------------------
 
-    private void btmRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmRefreshActionPerformed
+    private void btmExitActionPerformed(java.awt.event.ActionEvent evt) {                                        
+        WindowUtils.closeWindow(this);
+    }
+
+    private void btmRefreshActionPerformed(java.awt.event.ActionEvent evt) {                                           
         loadTable();
-    }//GEN-LAST:event_btmRefreshActionPerformed
+    }
 
-    private void btmModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmModifyActionPerformed
-        if (tableUsers.getRowCount()>0){
-            if (tableUsers.getSelectedRow()!=-1){
-                int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
-                User user = lc.findUser(id);
-                ModifyWindow mw = new ModifyWindow(user ,labelUsername.getText());
-                mw.setVisible(true);
-                mw.setLocationRelativeTo(null);
-                this.setVisible(false);
-            }else {
-                cw.viewMessage("Please select a record", "Error", "Selection Error");
-            }
-        } 
-        else{
-            cw.viewMessage("There are no records to modify", "Error", "No records Error");
+    private void btmModifyActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        if (!validateTable()) {
+            return;
         }
-    }//GEN-LAST:event_btmModifyActionPerformed
+        int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
+        modifyUser(id);
+    }
 
-    private void btmDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmDeleteActionPerformed
-        if (tableUsers.getRowCount()>0){
-            if (tableUsers.getSelectedRow()!=-1){
-                int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
-                try {
-                    lc.deleteUser(id);
-                } catch (NonexistentEntityException ex) {
-                    cw.viewMessage("Has been an error with the database","Error","Database Error");
-                }
-                cw.viewMessage("Successful user deletion","Info","Delete Successful");
-                loadTable();
-            }else {
-                cw.viewMessage("Please select a record", "Error", "Selection Error");
-            }
-        } 
-        else{
-            cw.viewMessage("There are no records to modify", "Error", "No records Error");
+    private void btmDeleteActionPerformed(java.awt.event.ActionEvent evt) {                                          
+        if (!validateTable()) {
+            return;
         }
-    
-    }//GEN-LAST:event_btmDeleteActionPerformed
+        int id = Integer.parseInt(String.valueOf(tableUsers.getValueAt(tableUsers.getSelectedRow(), 0)));
+        deleteUser(id);
+    }
 
-    private void btmRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmRegisterActionPerformed
+    private void btmRegisterActionPerformed(java.awt.event.ActionEvent evt) {                                            
         RegisterWindow rw = new RegisterWindow(labelUsername.getText());
-        rw.setVisible(true);
-        rw.setLocationRelativeTo(null);
-        this.setVisible(false);
-    }//GEN-LAST:event_btmRegisterActionPerformed
+        WindowUtils.openWindow(rw);
+        WindowUtils.closeWindow(this);
+    }
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {                                  
         loadTable();
-    }//GEN-LAST:event_formWindowOpened
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -253,6 +230,10 @@ public class PrincipalAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel labelUsername;
     private javax.swing.JTable tableUsers;
     // End of variables declaration//GEN-END:variables
+
+    //------------------------------------------------------------------------------------------------------------------
+    // REUSED/REFACTOR CODE
+    //------------------------------------------------------------------------------------------------------------------
 
     private void loadTable() {
         //define the model of the table
@@ -278,5 +259,36 @@ public class PrincipalAdmin extends javax.swing.JFrame {
             }
         }
         tableUsers.setModel(modelTable);
-      }
+    }
+
+
+    private boolean validateTable(){
+        boolean isValid = true;
+        if(!(tableUsers.getRowCount() >0)) {
+            cw.viewMessage("There are no records to modify", "Error", "Error: No records");
+            isValid= false;
+          }
+        if (tableUsers.getSelectedRow() == -1){
+            cw.viewMessage("Please select a record", "Error", "Error: No selection");
+            isValid= false;
+        }
+        return isValid;
+    }
+
+    private void deleteUser(int id){
+        lc.deleteUser(id);
+        cw.viewMessage("Successful user deletion","Info","Delete Successful");
+        loadTable();
+    }
+
+    private void modifyUser(int id){
+        User user = lc.findUser(id);
+        ModifyWindow mw = new ModifyWindow(user ,labelUsername.getText());
+        WindowUtils.openWindow(mw);
+        WindowUtils.closeWindow(this);
+    }
 }
+
+
+
+

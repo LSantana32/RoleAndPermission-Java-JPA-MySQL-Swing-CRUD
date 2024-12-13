@@ -39,7 +39,7 @@ public class LogicController {
         pc.registerUser(user);
     }
 
-    public void deleteUser(int id) throws NonexistentEntityException {
+    public void deleteUser(int id){
         pc.deleteUser(id);
     }
     
@@ -58,7 +58,7 @@ public class LogicController {
             return usernames;
     }
 
-    public void modifyUser(int id, String username, String password, String role) throws Exception {
+    public void modifyUser(int id, String username, String password, String role){
         User user = new User(id,username,password,pc.getRole(role));
         pc.modifyUser(user);
     }

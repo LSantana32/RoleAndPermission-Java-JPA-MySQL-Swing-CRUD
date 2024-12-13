@@ -126,13 +126,17 @@ public class PrincipalUser extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btmExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btmExitActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_btmExitActionPerformed
+    //------------------------------------------------------------------------------------------------------------------
+    // INTERFACE USER CODE
+    //------------------------------------------------------------------------------------------------------------------
+
+    private void btmExitActionPerformed(java.awt.event.ActionEvent evt) {
+        WindowUtils.closeWindow(this);
+    }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         loadTable();
-    }//GEN-LAST:event_formWindowOpened
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -144,6 +148,10 @@ public class PrincipalUser extends javax.swing.JFrame {
     private javax.swing.JLabel labelUsername;
     private javax.swing.JTable tableUsers;
     // End of variables declaration//GEN-END:variables
+
+    //------------------------------------------------------------------------------------------------------------------
+    // REUSED/REFACTOR CODE
+    //------------------------------------------------------------------------------------------------------------------
 
     private void loadTable() {
         //define the model of the table
